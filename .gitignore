@@ -15,3 +15,6 @@ receipt.json
 
 # a draft for the owner to edit; it is submitted in a web form, not published with the code
 ENTRY-FORM-DRAFT.md
+
+# OpenTimestamps keeps the pre-upgrade proof as .bak; only the upgraded .ots is published
+*.ots.bak
