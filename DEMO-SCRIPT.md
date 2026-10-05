@@ -15,7 +15,7 @@ A screen-and-voice script for me to record. Target 3:00. The voice is about 360 
 **On screen:** the README, top of the page: the title and the three answers table.
 
 **Say:**
-> An AI agent says it's done. "I pushed the fix." Sometimes the log says otherwise, or nothing at all. I wanted a check that runs on my own PC and shows its work. Two small models each quote the exact line from the log that proves the claim. If the quote isn't there, the answer is "not shown".
+> An AI agent says it's done. "I pushed the fix." Sometimes the log says otherwise, or nothing at all. I wanted a check that runs on my own PC and shows its work. Two small models each quote the exact line from the log that shows it. If the quote isn't there, the answer is "not shown".
 
 ## 2. Lemonade serving the two models (0:20 to 0:45)
 
@@ -41,7 +41,7 @@ python -m receipt_pair check --claim "I pushed the parser fix to acme/tools." --
 **On screen, when it finishes:** the answer, SHOWN, with each model's quote. Point at "The quote is in the output of T1, character for character."
 
 **Say:**
-> The claim: I pushed the parser fix. Both models say shown, and each quotes the line that proves it. A small script checks that the line is in the log, character for character.
+> The claim: I pushed the parser fix. Both models say shown, and each quotes the line that shows it. A small script checks that the line is in the log, character for character. That's shown as far as this log goes: a branch name isn't the change, and a log the agent could edit is still its word.
 
 **Paste in PowerShell:**
 ```powershell
