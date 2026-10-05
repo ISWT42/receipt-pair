@@ -141,13 +141,13 @@ print(result["answer"], result["quotes"])
 
 ## Results
 
-Two sealed tests. In both, the design was fingerprinted and time-stamped before any model call. Run 2's answers and scores were sealed before anyone read them. Run 1's were sealed a few minutes after the run ended, after its script had printed the scores (see Receipts). The exam is a set of invented agent logs, each with a claim and a known truth. A model from a different lab wrote the items to a fixed specification. Many of them are built around mistakes small checkers make: a success line from another environment, a verification tool that never ran, truncated output, a relayed claim. **The items stay unpublished until people have rated them**, so this repo holds their fingerprints and the scores, not the items.
+Two sealed tests. In both, the design was fingerprinted and time-stamped before any model was asked about an exam item. (Three toy items that are not in the exam had been tried earlier, to check the plumbing.) Run 2's answers and scores were sealed before anyone read them. Run 1's were sealed a few minutes after the run ended, after its script had printed the scores (see Receipts). The exam is a set of invented agent logs, each with a claim and a known truth. A model from a different lab wrote the items to a fixed specification. Many of them are built around mistakes small checkers make: a success line from another environment, a verification tool that never ran, truncated output, a relayed claim. **The items stay unpublished until people have rated them**, so this repo holds their fingerprints and the scores, not the items.
 
 **False "shown" is the number that matters.** It counts a claim the log doesn't back that the checker passed as backed. It's counted over the items whose truth is not "shown".
 
 ### Run 2, local lane: 100 fresh items (the primary test)
 
-Items 201 to 300 of the exam: 32 shown, 34 contradicted, 34 not shown. No model had seen them. I named R2 as the rule to test in the design, sealed before any run 2 model call; R3 was added in the sealed addendum described above. Same code, prompts and settings as run 1, through Lemonade on my PC, 17:37 to 19:26 UTC on 5 Oct 2026.
+Items 201 to 300 of the exam: 32 shown, 34 contradicted, 34 not shown. No model had seen them. I named R2 as the rule to test in the design, sealed before any model was asked about these items; R3 was added in the sealed addendum described above. Same code, prompts and settings as run 1, through Lemonade on my PC, 17:37 to 19:26 UTC on 5 Oct 2026.
 
 | Arm | Right | False "shown" | True "shown" kept |
 |---|---|---|---|
@@ -202,23 +202,23 @@ Items 1 to 160 of the same exam: 54 shown, 53 contradicted, 53 not shown. This i
 - **No NPU.** I measured on an Intel i5-14450HX mini PC with 32 GB of RAM, no discrete GPU and no NPU. Lemonade's own health report labels the llama.cpp device "gpu" there, so I don't call these runs CPU-only. All timings are from that PC. Running this on an NPU is the next step, and it needs hardware I don't have.
 - **The models didn't run at the same time.** Lemonade held one at a time in these runs. "Side by side" here means one server and two models, switched by the client.
 - **A second author's items replicated the overconfidence findings, not the rule gains.** I repeated the main checks on 40 items written blind by a different model from another lab, run through hosted copies of the models (not Lemonade). In a separate test that isn't part of this repo, I asked each model whether it was sure of its answer. It almost never said "unsure", and 12 of 37 and 8 of 40 of its "sure" answers were wrong, which matches what I saw on the main exam. The rule gains didn't show at that size: false "shown" was 3 of 27 under R1 and 3 of 27 under R3, and Gemma alone was already at 3 of 27, so there was little left to cut. 40 items can only show a direction.
-- **The quote check costs some right answers.** It exists so nothing invented can become "shown", not to raise accuracy. In run 2's local lane it changed 5 of 280 answers: it overturned 4 right verdicts and caught 1 wrong one. In run 1 it changed 25 of 480 answers (three arms): 13 right verdicts overturned, 7 wrong ones caught.
+- **The quote check costs some right answers.** It exists so nothing invented can become "shown", not to raise accuracy. In run 2's local lane it changed 5 of 280 answers: it overturned 4 right verdicts and caught 1 wrong one. In run 1 it changed 25 of 480 answers (three arms): 13 right verdicts overturned, 7 wrong ones caught. I counted these from the sealed answers files, which aren't published yet.
 - **Is a local re-run identical? I don't know yet.** The check on Lemonade is designed and sealed (see Receipts), and I have no result to report.
 - **Long logs.** The models see up to 6 turns, with long text cut in the middle. Lemonade's context window in my runs was 4,096 tokens, and the longest prompt was 1,577. I haven't tested much bigger logs.
 
 ## Why local
 
-A checker you can't re-run isn't a receipt. I ran the same 140 items twice through two hosted open-weight models with identical prompts and settings (temperature 0, seed 42, through OpenRouter). Between the two identical runs the verdict changed on 15 of 140 items for Qwen 3.5 9B and 23 of 140 for Gemma 4 26B. Pinned to one provider it changed on 22 and 4. A local model with fixed weights and fixed settings is a better base for a receipt. Whether Lemonade gives identical answers on a re-run is the open question above.
+A checker you can't re-run isn't a receipt. I ran the same 140 items twice through two hosted open-weight models with identical prompts and settings (temperature 0, seed 42, through OpenRouter). Between the two identical runs the verdict changed on 15 of 140 items for Qwen 3.5 9B and 23 of 140 for Gemma 4 26B. Pinned to one provider it changed on 22 and 4. I counted these from sealed answers files that aren't published yet; their fingerprints are in `receipts/hosted/`. A local model with fixed weights and fixed settings is a better base for a receipt. Whether Lemonade gives identical answers on a re-run is the open question above.
 
 ## Receipts
 
-Every number above comes from a file that was fingerprinted (SHA-256) and time-stamped. The designs were sealed before any model call; run 2's results (and the replication's and the hosted repeats') were sealed before anyone read them; run 1's results were sealed a few minutes after the run, once its script had printed them. The fingerprints and the stamps are in `receipts/`, and the sealed score files are there too. A sealed file is never edited afterwards; a correction is a new note.
+Every number above comes from a file that was fingerprinted (SHA-256) and time-stamped. The designs were sealed before any model was asked about an exam item; run 2's results (and the replication's and the hosted repeats') were sealed before anyone read them; run 1's results were sealed a few minutes after the run, once its script had printed them. The fingerprints and the stamps are in `receipts/`, and the sealed score files are there too. A sealed file is never edited afterwards; a correction is a new note.
 
 | Seal (in `receipts/`) | What it fixes | Stamped (FreeTSA, GMT) | Bitcoin proof |
 |---|---|---|---|
-| `run1/DESIGN-SHA256.txt` | Run 1's design, its 160 items, the runner and the reader, before any model call | 5 Oct 2026, 00:01:13 | block 969925 |
+| `run1/DESIGN-SHA256.txt` | Run 1's design, its 160 items, the runner and the reader, before any model was asked about them | 5 Oct 2026, 00:01:13 | block 969925 |
 | `run1/RESULTS-SHA256.txt` | Run 1's answers and scores | 5 Oct 02:48:46 | pending |
-| `bank/completion-claims-001-300-SHA256.txt` | The 300-item exam file, before any run 2 call | 5 Oct 17:36:46 | pending |
+| `bank/completion-claims-001-300-SHA256.txt` | The 300-item exam file, before any model was asked about run 2's items | 5 Oct 17:36:46 | pending |
 | `run2/RUN2-DESIGN-SHA256.txt` | Run 2's design: the arms, R1 and R2, the measures | 5 Oct 17:29:11 | pending |
 | `run2/RUN2-ADDENDUM-R3-SHA256.txt` | Rule R3, before any local result was read | 5 Oct 17:45:19 | pending |
 | `run2/LOCAL-RESULTS-SHA256.txt` | Run 2's local answers and scores | 5 Oct 19:26:53 | pending |

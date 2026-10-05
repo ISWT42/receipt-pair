@@ -190,6 +190,29 @@ class TheRealTransport(unittest.TestCase):
         self.assertIsNone(seen["request"].data)
         self.assertEqual(seen["request"].get_method(), "GET")
 
+    def test_the_real_urllib_machinery_end_to_end_without_a_socket(self):
+        """Real Request, real opener, real response handling; only the last step (the socket) is replaced."""
+        import email.message
+        import urllib.response
+        seen = {}
+
+        class Response(urllib.response.addinfourl):
+            msg = "OK"
+
+        def http_open(handler, request):
+            seen["method"], seen["url"], seen["data"] = request.get_method(), request.full_url, request.data
+            seen["type"] = request.get_header("Content-type")
+            return Response(io.BytesIO(b'{"choices": [{"message": {"content": "hello"}}]}'), email.message.Message(), request.full_url, 200)
+
+        with mock.patch.object(urllib.request.HTTPHandler, "http_open", http_open):
+            fake_url = BASE + "/chat/completions"
+            client = lemonade.LemonadeClient(log=io.StringIO())          # the default transport
+            chat = client.chat(lemonade.QWEN, "system", "user")
+            self.assertEqual((chat.text, chat.error), ("hello", None))
+            self.assertEqual((seen["method"], seen["url"]), ("GET", BASE + "/stats"))      # the last call is the stats request
+            self.assertEqual(lemonade.urllib_transport("POST", fake_url, {"a": 1}), {"choices": [{"message": {"content": "hello"}}]})
+            self.assertEqual((seen["method"], json.loads(seen["data"]), seen["type"]), ("POST", {"a": 1}, "application/json"))
+
     def test_proxy_settings_are_never_used(self):
         _, seen = self.run_transport("GET", None)
         proxy_handlers = [h for h in seen["handlers"] if isinstance(h, urllib.request.ProxyHandler)]
