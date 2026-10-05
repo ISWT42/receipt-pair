@@ -104,6 +104,13 @@ Gemma-4-E4B-it-GGUF (B): shown
   model's reason: T1's output confirms the fix-parser branch of acme/tools was updated.
 ```
 
+Read that "shown" as "shown, as far as this log goes". Two catches remain:
+
+- **Who kept the log.** A log the agent could write or edit is still the agent's word.
+- **A name is not the content.** `fix-parser` is a branch name. The push line shows the branch moved, not what the change contains.
+
+Most setups treat a clean success line like this one as their best case. In my protocol it's the floor: a record the agent can't touch, showing what was actually done, is where checking starts. Receipt Pair checks a claim against the log you give it; keeping that log out of the agent's reach is your setup's job.
+
 A claim that has to load its model is slow (23 seconds for Qwen and 57 for Gemma on my PC, against 4 to 21 seconds for the next ones). If Lemonade isn't running, `check` stops with an error instead of answering "not shown"; if only one model fails to answer, its row says so. To see the quote check without any model, run `python -m receipt_pair verify --log examples/push-ok.json --reply examples/reply-invented-quote.json`: it shows a reply that quotes a line which isn't in the log, and the answer it becomes.
 
 ## Using it on your own logs
@@ -201,7 +208,7 @@ Items 1 to 160 of the same exam: 54 shown, 53 contradicted, 53 not shown. This i
 - **The items were written by a model, and no person has checked them yet.** A blind check by people is planned. Until it's done, some labels may be wrong.
 - **No NPU.** I measured on an Intel i5-14450HX mini PC with 32 GB of RAM, no discrete GPU and no NPU. Lemonade's own health report labels the llama.cpp device "gpu" there, so I don't call these runs CPU-only. All timings are from that PC. Running this on an NPU is the next step, and it needs hardware I don't have.
 - **The models didn't run at the same time.** Lemonade held one at a time in these runs. "Side by side" here means one server and two models, switched by the client.
-- **A second author's items replicated the overconfidence findings, not the rule gains.** I repeated the main checks on 40 items written blind by a different model from another lab, run through hosted copies of the models (not Lemonade). In a separate test that isn't part of this repo, I asked each model whether it was sure of its answer. It almost never said "unsure", and 12 of 37 and 8 of 40 of its "sure" answers were wrong, which matches what I saw on the main exam. The rule gains didn't show at that size: false "shown" was 3 of 27 under R1 and 3 of 27 under R3, and Gemma alone was already at 3 of 27, so there was little left to cut. 40 items can only show a direction.
+- **A second author's items replicated the overconfidence findings, not the rule gains.** I repeated the main checks on 40 items written blind by a different model from another lab, run through hosted copies of the models (not Lemonade). In a separate test that isn't part of this repo, I asked each model whether it was sure of its answer. It almost never said "unsure", and 12 of 37 and 8 of 40 of its "sure" answers were wrong, which points the same way as the main exam. The rule gains didn't show at that size: false "shown" was 3 of 27 under R1 and 3 of 27 under R3, and Gemma alone was already at 3 of 27, so there was little left to cut. 40 items can only show a direction.
 - **The quote check costs some right answers.** It exists so nothing invented can become "shown", not to raise accuracy. In run 2's local lane it changed 5 of 280 answers: it overturned 4 right verdicts and caught 1 wrong one. In run 1 it changed 25 of 480 answers (three arms): 13 right verdicts overturned, 7 wrong ones caught. I counted these from the sealed answers files, which aren't published yet.
 - **Is a local re-run identical? I don't know yet.** The check on Lemonade is designed and sealed (see Receipts), and I have no result to report.
 - **Long logs.** The models see up to 6 turns, with long text cut in the middle. Lemonade's context window in my runs was 4,096 tokens, and the longest prompt was 1,577. I haven't tested much bigger logs.
@@ -217,18 +224,18 @@ Every number above comes from a file that was fingerprinted (SHA-256) and time-s
 | Seal (in `receipts/`) | What it fixes | Stamped (FreeTSA, GMT) | Bitcoin proof |
 |---|---|---|---|
 | `run1/DESIGN-SHA256.txt` | Run 1's design, its 160 items, the runner and the reader, before any model was asked about them | 5 Oct 2026, 00:01:13 | block 969925 |
-| `run1/RESULTS-SHA256.txt` | Run 1's answers and scores | 5 Oct 02:48:46 | pending |
-| `bank/completion-claims-001-300-SHA256.txt` | The 300-item exam file, before any model was asked about run 2's items | 5 Oct 17:36:46 | pending |
-| `run2/RUN2-DESIGN-SHA256.txt` | Run 2's design: the arms, R1 and R2, the measures | 5 Oct 17:29:11 | pending |
-| `run2/RUN2-ADDENDUM-R3-SHA256.txt` | Rule R3, before any local result was read | 5 Oct 17:45:19 | pending |
-| `run2/LOCAL-RESULTS-SHA256.txt` | Run 2's local answers and scores | 5 Oct 19:26:53 | pending |
-| `replication/ITEMS-SHA256.txt` | The 40 replication items | 5 Oct 19:25:32 | pending |
-| `replication/REPLICATION-DESIGN-SHA256.txt` | The replication's design and code, before its items existed | 5 Oct 18:51:29 | pending |
-| `replication/REPLICATION-RESULTS-SHA256.txt` | The replication's answers and scores | 5 Oct 19:28:20 | pending |
-| `hosted/FAST-RESULTS-SHA256.txt` | The hosted models' answers, unpinned run | 5 Oct 17:42:38 | pending |
+| `run1/RESULTS-SHA256.txt` | Run 1's answers and scores | 5 Oct 02:48:46 | block 969947 |
+| `bank/completion-claims-001-300-SHA256.txt` | The 300-item exam file, before any model was asked about run 2's items | 5 Oct 17:36:46 | block 970059 |
+| `run2/RUN2-DESIGN-SHA256.txt` | Run 2's design: the arms, R1 and R2, the measures | 5 Oct 17:29:11 | block 970059 |
+| `run2/RUN2-ADDENDUM-R3-SHA256.txt` | Rule R3, before any local result was read | 5 Oct 17:45:19 | block 970059 |
+| `run2/LOCAL-RESULTS-SHA256.txt` | Run 2's local answers and scores | 5 Oct 19:26:53 | block 970070 |
+| `replication/ITEMS-SHA256.txt` | The 40 replication items | 5 Oct 19:25:32 | block 970070 |
+| `replication/REPLICATION-DESIGN-SHA256.txt` | The replication's design and code, before its items existed | 5 Oct 18:51:29 | block 970065 |
+| `replication/REPLICATION-RESULTS-SHA256.txt` | The replication's answers and scores | 5 Oct 19:28:20 | block 970070 |
+| `hosted/FAST-RESULTS-SHA256.txt` | The hosted models' answers, unpinned run | 5 Oct 17:42:38 | block 970059 |
 | `hosted/REPEAT-SHA256.txt` | The same unpinned run, repeated | 5 Oct 18:09:23 | no proof file |
 | `hosted/PINNED-REPEAT-DESIGN-SHA256.txt` | The design of the pinned-provider repeat | 5 Oct 18:13:51 | no proof file |
-| `hosted/PINNED-RESULTS-SHA256.txt` | The pinned-provider repeats | 5 Oct 18:28:16 | pending |
+| `hosted/PINNED-RESULTS-SHA256.txt` | The pinned-provider repeats | 5 Oct 18:28:16 | block 970063 |
 | `hosted/LOCAL-REPEAT-DESIGN-SHA256.txt` | The design of the check on Lemonade's repeatability | 5 Oct 18:48:02 | no proof file |
 
 Fingerprints of the main files:
@@ -245,7 +252,7 @@ Not every file a list names is here. The answers files hold the exam's text, whi
 
 1. **Hash it.** `sha256sum -c --ignore-missing LOCAL-RESULTS-SHA256.txt` checks the files that are here (`results/score-run2-local.json`). On Windows PowerShell: `(Get-FileHash results\score-run2-local.json -Algorithm SHA256).Hash`.
 2. **Check the FreeTSA stamp.** Download FreeTSA's published certificates, `cacert.pem` and `tsa.crt`, from [freetsa.org](https://freetsa.org), then run `openssl ts -verify -in LOCAL-RESULTS-SHA256.txt.tsr -data LOCAL-RESULTS-SHA256.txt -CAfile cacert.pem -untrusted tsa.crt`. It should say `Verification: OK`. `openssl ts -reply -in LOCAL-RESULTS-SHA256.txt.tsr -text` shows the time on the `Time stamp:` line. That time is FreeTSA's clock; on 5 Oct it ran about 12 seconds ahead of my PC's.
-3. **Check OpenTimestamps.** `ots verify LOCAL-RESULTS-SHA256.txt.ots` (the OpenTimestamps client and a Bitcoin node), or drop both files on [opentimestamps.org](https://opentimestamps.org). "Pending" in the table means the proof file holds only the calendar servers' promise. Only a proof that names a Bitcoin block counts, and `ots upgrade` fetches it once the block exists.
+3. **Check OpenTimestamps.** `ots verify LOCAL-RESULTS-SHA256.txt.ots` (the OpenTimestamps client and a Bitcoin node), or drop both files on [opentimestamps.org](https://opentimestamps.org). A proof that names only the calendar servers is a promise. Only a proof that names a Bitcoin block counts, and `ots upgrade` fetches it once the block exists; every proof in the table now names its block.
 
 A stamp shows the file existed, exactly as it is, by that time. It doesn't show the file is right.
 
