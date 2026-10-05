@@ -1,0 +1,6 @@
+[
+  {
+    "cmd": "python send_invoice.py --month march --to dana@example.org",
+    "output": "Connecting to smtp.example.org...\nsmtplib.SMTPAuthenticationError: (535, 'Authentication failed')"
+  }
+]

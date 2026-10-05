@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+.env
+.env.*
+*.pem
+*.key
+
+# local outputs
+answers.jsonl
+receipt.json
+
+# a draft for the owner to edit; it is submitted in a web form, not published with the code
+ENTRY-FORM-DRAFT.md

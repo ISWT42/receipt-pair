@@ -1,0 +1,191 @@
+{
+ "note": "Exploratory, post hoc. The sealed result is results/score-run.json.",
+ "arms": {
+  "A": {
+   "right": 106,
+   "per_truth": {
+    "shown": "48/54",
+    "contradicted": "41/53",
+    "not shown": "17/53"
+   },
+   "shown_when_contradicted": 4,
+   "shown_when_not_shown": 21,
+   "contradicted_when_shown": 2
+  },
+  "B": {
+   "right": 103,
+   "per_truth": {
+    "shown": "52/54",
+    "contradicted": "35/53",
+    "not shown": "16/53"
+   },
+   "shown_when_contradicted": 14,
+   "shown_when_not_shown": 26,
+   "contradicted_when_shown": 0
+  },
+  "C": {
+   "right": 98,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "39/53",
+    "not shown": "13/53"
+   },
+   "shown_when_contradicted": 8,
+   "shown_when_not_shown": 22,
+   "contradicted_when_shown": 4
+  }
+ },
+ "rules": {
+  "sealed AB": {
+   "right": 105,
+   "per_truth": {
+    "shown": "51/54",
+    "contradicted": "37/53",
+    "not shown": "17/53"
+   },
+   "shown_when_contradicted": 6,
+   "shown_when_not_shown": 24,
+   "contradicted_when_shown": 0
+  },
+  "sealed AC": {
+   "right": 96,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "39/53",
+    "not shown": "11/53"
+   },
+   "shown_when_contradicted": 6,
+   "shown_when_not_shown": 23,
+   "contradicted_when_shown": 3
+  },
+  "sealed BC": {
+   "right": 101,
+   "per_truth": {
+    "shown": "49/54",
+    "contradicted": "35/53",
+    "not shown": "17/53"
+   },
+   "shown_when_contradicted": 7,
+   "shown_when_not_shown": 23,
+   "contradicted_when_shown": 1
+  },
+  "unanimous AB": {
+   "right": 106,
+   "per_truth": {
+    "shown": "47/54",
+    "contradicted": "31/53",
+    "not shown": "28/53"
+   },
+   "shown_when_contradicted": 4,
+   "shown_when_not_shown": 17,
+   "contradicted_when_shown": 0
+  },
+  "unanimous AC": {
+   "right": 104,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "39/53",
+    "not shown": "19/53"
+   },
+   "shown_when_contradicted": 4,
+   "shown_when_not_shown": 20,
+   "contradicted_when_shown": 1
+  },
+  "unanimous BC": {
+   "right": 102,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "30/53",
+    "not shown": "26/53"
+   },
+   "shown_when_contradicted": 6,
+   "shown_when_not_shown": 18,
+   "contradicted_when_shown": 0
+  },
+  "shown_needs_both AB": {
+   "right": 108,
+   "per_truth": {
+    "shown": "47/54",
+    "contradicted": "37/53",
+    "not shown": "24/53"
+   },
+   "shown_when_contradicted": 4,
+   "shown_when_not_shown": 17,
+   "contradicted_when_shown": 0
+  },
+  "shown_needs_both AC": {
+   "right": 99,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "39/53",
+    "not shown": "14/53"
+   },
+   "shown_when_contradicted": 4,
+   "shown_when_not_shown": 20,
+   "contradicted_when_shown": 3
+  },
+  "shown_needs_both BC": {
+   "right": 103,
+   "per_truth": {
+    "shown": "46/54",
+    "contradicted": "35/53",
+    "not shown": "22/53"
+   },
+   "shown_when_contradicted": 6,
+   "shown_when_not_shown": 18,
+   "contradicted_when_shown": 1
+  },
+  "majority ABC": {
+   "right": 102,
+   "per_truth": {
+    "shown": "47/54",
+    "contradicted": "40/53",
+    "not shown": "15/53"
+   },
+   "shown_when_contradicted": 6,
+   "shown_when_not_shown": 21,
+   "contradicted_when_shown": 1
+  }
+ },
+ "codes": {
+  "A": {
+   "model_not_shown": 16,
+   "verified": 131,
+   "unverified_quote": 10,
+   "shown_citing_failure": 3
+  },
+  "B": {
+   "model_not_shown": 18,
+   "verified": 138,
+   "unverified_quote": 3,
+   "shown_citing_failure": 1
+  },
+  "C": {
+   "model_not_shown": 13,
+   "verified": 137,
+   "unverified_quote": 6,
+   "shown_citing_failure": 2,
+   "unparseable_reply": 2
+  }
+ },
+ "per_batch": {
+  "A": {
+   "1": "32/40",
+   "2": "28/40",
+   "3": "21/40",
+   "4": "25/40"
+  },
+  "B": {
+   "1": "36/40",
+   "2": "26/40",
+   "3": "17/40",
+   "4": "24/40"
+  },
+  "C": {
+   "1": "30/40",
+   "2": "26/40",
+   "3": "20/40",
+   "4": "22/40"
+  }
+ }
+}

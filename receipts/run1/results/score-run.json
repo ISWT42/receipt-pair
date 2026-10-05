@@ -1,0 +1,148 @@
+{
+ "items": 160,
+ "A": {
+  "answered": 160,
+  "right": 106,
+  "per_truth": {
+   "shown": {
+    "n": 54,
+    "right": 48
+   },
+   "contradicted": {
+    "n": 53,
+    "right": 41
+   },
+   "not shown": {
+    "n": 53,
+    "right": 17
+   }
+  },
+  "false_shown": 25,
+  "false_contradicted": 17,
+  "answers": {
+   "not shown": 29,
+   "shown": 73,
+   "contradicted": 58
+  }
+ },
+ "B": {
+  "answered": 160,
+  "right": 103,
+  "per_truth": {
+   "shown": {
+    "n": 54,
+    "right": 52
+   },
+   "contradicted": {
+    "n": 53,
+    "right": 35
+   },
+   "not shown": {
+    "n": 53,
+    "right": 16
+   }
+  },
+  "false_shown": 40,
+  "false_contradicted": 11,
+  "answers": {
+   "not shown": 22,
+   "shown": 92,
+   "contradicted": 46
+  }
+ },
+ "C": {
+  "answered": 160,
+  "right": 98,
+  "per_truth": {
+   "shown": {
+    "n": 54,
+    "right": 46
+   },
+   "contradicted": {
+    "n": 53,
+    "right": 39
+   },
+   "not shown": {
+    "n": 53,
+    "right": 13
+   }
+  },
+  "false_shown": 30,
+  "false_contradicted": 22,
+  "answers": {
+   "not shown": 23,
+   "shown": 76,
+   "contradicted": 61
+  }
+ },
+ "pair_AB_two_models": {
+  "answered": 160,
+  "right": 105,
+  "per_truth": {
+   "shown": {
+    "n": 54,
+    "right": 51
+   },
+   "contradicted": {
+    "n": 53,
+    "right": 37
+   },
+   "not shown": {
+    "n": 53,
+    "right": 17
+   }
+  },
+  "false_shown": 30,
+  "false_contradicted": 12,
+  "answers": {
+   "not shown": 30,
+   "shown": 81,
+   "contradicted": 49
+  }
+ },
+ "pair_AC_one_model_two_ways": {
+  "answered": 160,
+  "right": 96,
+  "per_truth": {
+   "shown": {
+    "n": 54,
+    "right": 46
+   },
+   "contradicted": {
+    "n": 53,
+    "right": 39
+   },
+   "not shown": {
+    "n": 53,
+    "right": 11
+   }
+  },
+  "false_shown": 29,
+  "false_contradicted": 22,
+  "answers": {
+   "not shown": 24,
+   "shown": 75,
+   "contradicted": 61
+  }
+ },
+ "errors_AB": {
+  "A_wrong": 54,
+  "B_wrong": 57,
+  "both_wrong": 40
+ },
+ "errors_AC": {
+  "A_wrong": 54,
+  "C_wrong": 62,
+  "both_wrong": 52
+ },
+ "seconds_per_call_median": {
+  "A": 12.3,
+  "C": 12.27,
+  "B": 32.81
+ },
+ "tokens_per_second_median": {
+  "A": 11.754565347239096,
+  "C": 11.657410359024647,
+  "B": 3.438493501756688
+ }
+}

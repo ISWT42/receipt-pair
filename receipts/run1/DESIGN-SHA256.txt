@@ -1,0 +1,7 @@
+21b412615dd13fe92cf2618734ef25543af0699dcda0b68d27e53cc8449bb822 *DESIGN.md
+3d8e8292ebd48b1278549988d275bac3a396ed99ccaa1e71a1df5b0d56468bdb *run_pair.py
+2e26f79306663060ac5020f9cf4b6647412f654914aba0e9c4ed491c6aaa2e50 *../chatgpt-review-2026-10-04/JOB3-BATCH-1.jsonl
+eaba7033475abf477dc834eecd949f5411a2bb0d9e5b1e880312770ff7855c94 *../chatgpt-review-2026-10-04/JOB3-BATCH-2.jsonl
+79c6af2628deb53fee96fc4ebb9625bd9ec9bd8f15c353c672ed3e11b1c42168 *../chatgpt-review-2026-10-04/JOB3-BATCH-3.jsonl
+c010aa2baa5b4e7ba9bad62035873808db8c831290d73d14e84a6d2032b6f0a5 *../chatgpt-review-2026-10-04/JOB3-BATCH-4.jsonl
+b0842ecd738554719443269a93665d0e8045c3244a20587e0455b82568169942 */c/Users/joshd/Workbench/swarm-receipts-public/receipts_model.py

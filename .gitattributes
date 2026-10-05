@@ -1,0 +1,5 @@
+# Sealed files must stay byte for byte: a changed line ending would break their fingerprints and stamps.
+receipts/** -text
+*.tsq binary
+*.tsr binary
+*.ots binary

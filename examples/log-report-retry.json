@@ -1,0 +1,10 @@
+[
+  {
+    "cmd": "python send_report.py --to finance@example.test",
+    "output": "smtplib.SMTPServerDisconnected: Connection unexpectedly closed"
+  },
+  {
+    "cmd": "python send_report.py --to finance@example.test",
+    "output": "Connecting to smtp.example.test...\nSent 1 message to finance@example.test"
+  }
+]
