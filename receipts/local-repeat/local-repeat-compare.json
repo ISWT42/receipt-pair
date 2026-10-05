@@ -1,0 +1,41 @@
+{
+ "design": "LOCAL-REPEAT-DESIGN.md",
+ "items": "201-240",
+ "arms": {
+  "A": {
+   "model": "Qwen3-4B-Instruct-2507-GGUF",
+   "n": 40,
+   "identical_verdicts": 40,
+   "identical_reply_text": 40,
+   "verdict_changed_ids": [],
+   "text_changed_ids": [],
+   "median_seconds_first": 12.2,
+   "median_seconds_repeat": 11.3,
+   "missing": []
+  },
+  "B": {
+   "model": "Gemma-4-E4B-it-GGUF",
+   "n": 40,
+   "identical_verdicts": 39,
+   "identical_reply_text": 30,
+   "verdict_changed_ids": [
+    "201"
+   ],
+   "text_changed_ids": [
+    "201",
+    "207",
+    "209",
+    "210",
+    "223",
+    "226",
+    "227",
+    "230",
+    "239",
+    "240"
+   ],
+   "median_seconds_first": 33.3,
+   "median_seconds_repeat": 32.6,
+   "missing": []
+  }
+ }
+}

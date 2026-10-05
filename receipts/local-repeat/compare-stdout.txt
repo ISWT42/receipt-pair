@@ -1,0 +1,3 @@
+written: local-repeat-compare.json
+arm A (Qwen3-4B-Instruct-2507-GGUF): verdicts identical 40 of 40, reply text identical 40 of 40; verdict changed []; text changed 0; median s 12.2 -> 11.3; missing []
+arm B (Gemma-4-E4B-it-GGUF): verdicts identical 39 of 40, reply text identical 30 of 40; verdict changed ['201']; text changed 10; median s 33.3 -> 32.6; missing []

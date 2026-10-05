@@ -210,12 +210,12 @@ Items 1 to 160 of the same exam: 54 shown, 53 contradicted, 53 not shown. This i
 - **The models didn't run at the same time.** Lemonade held one at a time in these runs. "Side by side" here means one server and two models, switched by the client.
 - **A second author's items replicated the overconfidence findings, not the rule gains.** I repeated the main checks on 40 items written blind by a different model from another lab, run through hosted copies of the models (not Lemonade). In a separate test that isn't part of this repo, I asked each model whether it was sure of its answer. It almost never said "unsure", and 12 of 37 and 8 of 40 of its "sure" answers were wrong, which points the same way as the main exam. The rule gains didn't show at that size: false "shown" was 3 of 27 under R1 and 3 of 27 under R3, and Gemma alone was already at 3 of 27, so there was little left to cut. 40 items can only show a direction.
 - **The quote check costs some right answers.** It exists so nothing invented can become "shown", not to raise accuracy. In run 2's local lane it changed 5 of 280 answers: it overturned 4 right verdicts and caught 1 wrong one. In run 1 it changed 25 of 480 answers (three arms): 13 right verdicts overturned, 7 wrong ones caught. I counted these from the sealed answers files, which aren't published yet.
-- **Is a local re-run identical? I don't know yet.** The check on Lemonade is designed and sealed (see Receipts), and I have no result to report.
+- **A local re-run is steadier, not perfect.** I ran items 201 to 240 a second time on Lemonade with the same code and settings, as a sealed design said. Qwen3-4B gave the same verdict on 40 of 40 and the same reply, word for word, on 40 of 40. Gemma-4-E4B gave the same verdict on 39 of 40 and the same reply on 30 of 40. The repeat paused once partway through, because my PC was needed for another test; Gemma's changed replies fall on both sides of the pause.
 - **Long logs.** The models see up to 6 turns, with long text cut in the middle. Lemonade's context window in my runs was 4,096 tokens, and the longest prompt was 1,577. I haven't tested much bigger logs.
 
 ## Why local
 
-A checker you can't re-run isn't a receipt. I ran the same 140 items twice through two hosted open-weight models with identical prompts and settings (temperature 0, seed 42, through OpenRouter). Between the two identical runs the verdict changed on 15 of 140 items for Qwen 3.5 9B and 23 of 140 for Gemma 4 26B. Pinned to one provider it changed on 22 and 4. I counted these from sealed answers files that aren't published yet; their fingerprints are in `receipts/hosted/`. A local model with fixed weights and fixed settings is a better base for a receipt. Whether Lemonade gives identical answers on a re-run is the open question above.
+A checker you can't re-run isn't a receipt. I ran the same 140 items twice through two hosted open-weight models with identical prompts and settings (temperature 0, seed 42, through OpenRouter). Between the two identical runs the verdict changed on 15 of 140 items for Qwen 3.5 9B and 23 of 140 for Gemma 4 26B. Pinned to one provider it changed on 22 and 4. I counted these from sealed answers files that aren't published yet; their fingerprints are in `receipts/hosted/`. On Lemonade, the same check repeated on 40 items changed the verdict on 0 of 40 for Qwen3-4B and 1 of 40 for Gemma-4-E4B, though Gemma's wording changed on 10 of 40 replies. A local model with fixed weights and fixed settings is a better base for a receipt, but check each model before you rely on it.
 
 ## Receipts
 
@@ -237,6 +237,8 @@ Every number above comes from a file that was fingerprinted (SHA-256) and time-s
 | `hosted/PINNED-REPEAT-DESIGN-SHA256.txt` | The design of the pinned-provider repeat | 5 Oct 18:13:51 | no proof file |
 | `hosted/PINNED-RESULTS-SHA256.txt` | The pinned-provider repeats | 5 Oct 18:28:16 | block 970063 |
 | `hosted/LOCAL-REPEAT-DESIGN-SHA256.txt` | The design of the check on Lemonade's repeatability | 5 Oct 18:48:02 | no proof file |
+| `local-repeat/LOCAL-REPEAT-RESULTS-SHA256.txt` | The local repeat's answers, before anyone read them | 5 Oct 20:42:15 | pending |
+| `local-repeat/LOCAL-REPEAT-COMPARE-SHA256.txt` | Its comparison with run 2's local lane, before anyone read it | 5 Oct 20:42:17 | pending |
 
 Fingerprints of the main files:
 
