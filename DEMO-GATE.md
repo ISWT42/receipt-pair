@@ -85,7 +85,7 @@ python examples/gate-demo/demo.py take2
 
 **The wait**, again about 80 seconds. I cut it again.
 
-**On screen, when the answer comes:** `Answer: SHOWN`, both models quoting the `OK` line (five seconds), the last line `shown: the log shows it worked, so the command runs`, the push output (`main -> main`), `Gate exit status: 0`, and `live: the server has:` followed by the commit.
+**On screen, when the answer comes:** `Answer: SHOWN`, both models quoting the `OK` line (five seconds), the line `shown: the log shows it worked, so the command runs`, the push output (`main -> main`), `Gate exit status: 0`, and `live: the server has:` followed by the commit.
 
 **Say:**
 > This time both models say shown, and both quote the OK line from the log. The gate lets the push run. And the server has the commit.
