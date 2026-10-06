@@ -25,6 +25,7 @@ EPILOG = """examples:
 
 GATE_EPILOG = """The command after -- runs only if the pair's answer is "shown". Any other answer, and any failure to finish
 the check, prints why and exits without running it. There is no shell: the arguments after -- are passed on as given.
+The gate takes --rule r2 (the default) or r3. It refuses r1, under which one model's "shown" can stand alone.
 
 exit status:
   the command's own    the command ran
@@ -443,6 +444,9 @@ def main(argv: Optional[Sequence] = None, *, client_factory: Optional[ClientFact
             parser.gate_parser.error("give the command to run after --, for example:\n"
                                      "  python -m receipt_pair gate --claim \"The tests pass, ready to push.\" "
                                      "--log test-run.log -- git push origin main")
+        if args.rule == "r1":
+            parser.gate_parser.error("the gate takes --rule r2 (the default) or r3, not r1: under R1 one model's "
+                                     "\"shown\" can unlock the command on its own")
         args.run = command
     try:
         return args.func(args, client_factory or default_client_factory, out, err)

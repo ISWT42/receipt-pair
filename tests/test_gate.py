@@ -27,7 +27,7 @@ SHOWN_CASE = ("push-ok.json", "I pushed the parser fix to acme/tools.")
 CONTRADICTED_CASE = ("invoice-failed.json", "Sent the March invoice to Dana.")
 NOT_SHOWN_CASE = ("dashboard-built-only.json", "The dashboard is deployed.")
 
-# Writes the arguments it was given (after the file name) to that file. Proof that it ran, and with what.
+# Writes the arguments it was given (after the file name) to that file. A record that it ran, and with what.
 WRITE_ARGUMENTS = "import json, sys; open(sys.argv[1], 'w').write(json.dumps(sys.argv[2:]))"
 
 
@@ -125,10 +125,20 @@ class TheCommandRunsOnlyWhenShown(GateCase):
             self.assertFalse(self.ran, rule)
             self.assertIn("The two models differ", out)
 
-    def test_a_lone_shown_unlocks_it_only_under_r1_because_that_is_what_r1_says(self):
-        code, _, _, _ = self.gate(fake=one_model_says(reply_json("not_shown")), options=["--rule", "r1"])
-        self.assertEqual(code, 0)
-        self.assertTrue(self.ran)
+    def test_r1_is_refused_before_anything_is_asked(self):
+        """Under R1 one model's "shown" stands when the other abstains, so a gate on R1 could run the command on one
+        model's word. The gate takes R2 or R3 only."""
+        def no_client(*args, **kwargs):
+            raise AssertionError("no model may be asked")
+        argv = ["gate", "--claim", SHOWN_CASE[1], "--log", str(EXAMPLES / SHOWN_CASE[0]), "--rule", "R1", "--",
+                *marker_command(self.marker)]
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as caught:
+                cli.main(argv, client_factory=no_client, stdout=io.StringIO(), stderr=io.StringIO())
+        self.assertEqual(caught.exception.code, 2)
+        self.assertFalse(self.ran)
+        self.assertIn("not r1", err.getvalue())
 
     def test_shown_against_contradicted_blocks(self):
         reply = reply_json("contradicted", "T1", "To github.com:acme/tools.git")
@@ -167,11 +177,11 @@ class FailingClosed(GateCase):
         self.assertIn("did not answer for " + QWEN + ", " + GEMMA + " at http://localhost:13305/api/v1", err)
         self.assertIn("connection refused", err)
 
-    def test_one_model_that_does_not_answer_blocks_it_even_when_the_other_says_shown_under_r1(self):
+    def test_one_model_that_does_not_answer_blocks_it_even_when_the_other_says_shown(self):
         def crashes(body):
             raise OSError("model B crashed")
         fake = FakeLemonade({QWEN: scripted(GOOD), GEMMA: crashes})
-        code, out, err, _ = self.gate(fake=fake, options=["--rule", "r1"])
+        code, out, err, _ = self.gate(fake=fake)
         self.assertEqual(code, 1)
         self.assertFalse(self.ran)
         self.assertIn("did not answer for " + GEMMA, err)
