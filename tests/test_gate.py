@@ -14,7 +14,6 @@ from pathlib import Path
 from unittest import mock
 
 from receipt_pair import cli, gate, pair, rules
-from receipt_pair import client as lemonade
 
 from .fakes import FakeLemonade, reply_json
 from .test_cli import factory_for
