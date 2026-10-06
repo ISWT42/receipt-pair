@@ -81,9 +81,17 @@ class TheCommandRunsOnlyWhenShown(GateCase):
         self.assertEqual(self.arguments_it_ran_with(), ["one", "two"])
         self.assertIn("Answer: SHOWN", out)
         self.assertEqual(out.count(PUSH_QUOTE), 2)                      # both models' quotes are on the screen
-        self.assertIn("shown: the log shows it worked, so the command runs: ", out)
+        self.assertEqual(out.rstrip().splitlines()[-1], "shown: the log shows it worked, so the command runs: " + sys.executable)
         self.assertEqual(fake.chats(), [QWEN, GEMMA])
         self.assertIn("asking " + QWEN, err)
+
+    def test_a_real_run_names_the_program_but_never_prints_its_arguments_while_a_dry_run_lists_them(self):
+        secret = "sk-this-is-not-a-real-key-0123456789"
+        code, out, err, _ = self.gate(command=marker_command(self.marker, "--token", secret))
+        self.assertEqual(code, 0)
+        self.assertNotIn(secret, out + err)
+        code, out, _, _ = self.gate(command=marker_command(self.marker, "--token", secret), options=["--dry-run"])
+        self.assertIn(secret, out)
 
     def test_contradicted_blocks_the_command(self):
         code, out, err, fake = self.gate(CONTRADICTED_CASE)
@@ -400,7 +408,7 @@ class PlainWords(unittest.TestCase):
     def test_the_four_plain_lines(self):
         command = ["git", "push"]
         shown = gate.Judgment("shown", True, 0)
-        self.assertEqual(gate.plain_line(shown, command), 'shown: the log shows it worked, so the command runs: ["git", "push"]')
+        self.assertEqual(gate.plain_line(shown, command), "shown: the log shows it worked, so the command runs: git")
         self.assertEqual(gate.plain_line(shown, command, dry_run=True),
                          'shown: the log shows it worked. Dry run, so nothing runs. It would run: ["git", "push"]')
         self.assertEqual(gate.plain_line(gate.Judgment("not shown", False, 3), command), "not shown: no receipt, no action")

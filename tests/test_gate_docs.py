@@ -98,7 +98,7 @@ class WhatTheGateDocsSay(unittest.TestCase):
         text = section("## Gate an action on a receipt")
         for line in (gate.PLAIN["not shown"], gate.PLAIN["contradicted"], gate.PLAIN["could not check"]):
             self.assertIn("`" + line + "`", text)
-        self.assertIn("`shown: the log shows it worked, so the command runs: [...]`", text)
+        self.assertIn("`shown: the log shows it worked, so the command runs: git`", text)
         rows = {}
         for row in text.splitlines():
             cells = [cell.strip() for cell in row.strip().strip("|").split("|")]

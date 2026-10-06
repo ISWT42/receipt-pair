@@ -78,12 +78,16 @@ def describe(command: Sequence[str]) -> str:
 
 
 def plain_line(judgment: Judgment, command: Sequence[str], dry_run: bool = False) -> str:
-    """The one plain line that ends the gate's report."""
+    """The one plain line that ends the gate's report.
+
+    A real run names only the program: arguments can hold secrets, and this line ends up in logs. A dry run is
+    asked to say what it would do, so it lists every argument.
+    """
     if not judgment.run:
         return PLAIN[judgment.answer]
     if dry_run:
         return "shown: the log shows it worked. Dry run, so nothing runs. It would run: " + describe(command)
-    return "shown: the log shows it worked, so the command runs: " + describe(command)
+    return "shown: the log shows it worked, so the command runs: " + str(command[0])
 
 
 class CommandNotStarted(RuntimeError):

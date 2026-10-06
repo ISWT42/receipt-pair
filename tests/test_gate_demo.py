@@ -135,7 +135,7 @@ class TheTwoTakes(unittest.TestCase):
         self.assertEqual(self.take2["status"], 0)
         self.assertIn("Answer: SHOWN", self.take2["stdout"])
         self.assertEqual(self.take2["stdout"].count("quote from T1:\n    OK"), 2)         # both models quote the OK line
-        self.assertIn('shown: the log shows it worked, so the command runs: ["git", "push", "origin", "main"]', self.take2["stdout"])
+        self.assertEqual(self.take2["stdout"].rstrip().splitlines()[-1], "shown: the log shows it worked, so the command runs: git")
         self.assertIn("main -> main", self.take2["push_output"])
         self.assertTrue(self.take2["server_after"].endswith("Include tax in the cart total"), self.take2["server_after"])
 
