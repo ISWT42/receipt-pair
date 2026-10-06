@@ -51,14 +51,20 @@ CART_BUGGY = '''def total(prices, tax=0.0):
     return round(sum(prices), 2)
 '''
 CART_FIXED = CART_BUGGY.replace("round(sum(prices), 2)", "round(sum(prices) * (1 + tax), 2)")
+# Two tests, not one, because the agent's message says "tests". With a single test the log says "Ran 1 test", and in
+# the one live check of this demo Qwen3 read "The tests pass" literally against that and called the passing run
+# contradicted ("only one test passed"). Both tests fail while the bug is there, and both pass once it is fixed.
 TEST_CART = '''import unittest
 
 import cart
 
 
 class CartTests(unittest.TestCase):
-    def test_total_includes_tax(self):
+    def test_tax_is_added(self):
         self.assertEqual(cart.total([10.00, 5.00], tax=0.10), 16.50)
+
+    def test_tax_on_one_item(self):
+        self.assertEqual(cart.total([10.00], tax=0.20), 12.00)
 
 
 if __name__ == "__main__":
@@ -227,7 +233,7 @@ class Demo:
         heading(self.out, "Setup")
         build_folder(self.folder)
         say(self.out, "Throwaway folder: " + str(self.folder))
-        say(self.out, "  project/     a tiny cart project: cart.py and one test, test_cart.py. cart.py has a bug.")
+        say(self.out, "  project/     a tiny cart project: cart.py, and test_cart.py with two tests. cart.py has a bug.")
         say(self.out, "  server.git/  the pretend server: an empty git repository in the same folder.")
         say(self.out, "Nothing is pushed anywhere else. The demo reads none of your git settings.")
 

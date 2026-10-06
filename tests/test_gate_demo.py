@@ -33,8 +33,8 @@ REAL_RUN = subprocess.run
 def models_that_quote_the_deciding_line(body):
     """What a careful model would say about a unittest log: the failing line, or the OK line."""
     user = body["messages"][1]["content"]
-    if "FAILED (failures=1)" in user:
-        return reply_json("contradicted", "T1", "FAILED (failures=1)", reason="The test run failed.")
+    if "FAILED (failures=2)" in user:
+        return reply_json("contradicted", "T1", "FAILED (failures=2)", reason="The test run failed.")
     return reply_json("shown", "T1", "OK", reason="The tests passed.")
 
 
@@ -125,7 +125,7 @@ class TheTwoTakes(unittest.TestCase):
     def test_take_1_the_bug_makes_the_tests_fail_and_the_gate_blocks_the_push(self):
         self.assertEqual(self.take1["status"], 4)
         self.assertIn("Answer: CONTRADICTED", self.take1["stdout"])
-        self.assertEqual(self.take1["stdout"].count("FAILED (failures=1)"), 2)             # both models quote the failing line
+        self.assertEqual(self.take1["stdout"].count("FAILED (failures=2)"), 2)             # both models quote the failing line
         self.assertEqual(self.take1["stdout"].rstrip().splitlines()[-1], "contradicted: the log shows it failed")
         self.assertNotIn("the command runs", self.take1["stdout"])
         self.assertEqual(self.take1["push_output"], "")                                    # git was never started
@@ -148,14 +148,17 @@ class TheTwoTakes(unittest.TestCase):
                          ["Include tax in the cart total", "Add the cart total"])
 
     def test_the_log_was_written_by_the_script_from_the_real_test_run_before_the_gate_was_asked(self):
-        for take, verdict in ((self.take1, "FAILED (failures=1)"), (self.take2, "\n\nOK")):
+        for take, verdict in ((self.take1, "FAILED (failures=2)"), (self.take2, "\n\nOK")):
             turns = take["log_when_called"]
             self.assertEqual(len(turns), 1)
             self.assertEqual(turns[0]["cmd"], "python -m unittest -v")
-            self.assertIn("Ran 1 test in", turns[0]["output"])
+            # "tests", as the claim says. A log that says "Ran 1 test" made Qwen3 call a passing run contradicted (see TEST_CART).
+            self.assertIn("Ran 2 tests in", turns[0]["output"])
             self.assertTrue(turns[0]["output"].endswith(verdict), turns[0]["output"])
-        self.assertIn("AssertionError: 15.0 != 16.5", self.take1["log_when_called"][0]["output"])
-        self.assertIn("test_total_includes_tax", self.take2["log_when_called"][0]["output"])
+        for line in ("AssertionError: 15.0 != 16.5", "AssertionError: 10.0 != 12.0"):             # both tests fail with the bug
+            self.assertIn(line, self.take1["log_when_called"][0]["output"])
+        for name in ("test_tax_is_added", "test_tax_on_one_item"):                                 # and both pass without it
+            self.assertIn(name + " (test_cart.CartTests." + name + ") ... ok", self.take2["log_when_called"][0]["output"])
 
     def test_the_models_were_asked_for_every_gate_run_and_both_answered_before_the_push(self):
         self.assertEqual(self.take1["chats_so_far"], [QWEN, GEMMA])
@@ -316,7 +319,7 @@ class SafetyWithoutGit(unittest.TestCase):
         self.assertIn("round(sum(prices), 2)", demo.CART_BUGGY)
         self.assertIn("round(sum(prices) * (1 + tax), 2)", demo.CART_FIXED)
         self.assertEqual(demo.CART_FIXED.count("\n"), demo.CART_BUGGY.count("\n"))      # a one-line fix
-        self.assertEqual(demo.TEST_CART.count("def test_"), 1)                          # one test
+        self.assertEqual(demo.TEST_CART.count("def test_"), 2)                          # two tests: the claim says "tests"
         self.assertEqual(demo.CLAIM, "The tests pass, ready to push.")
 
     def test_the_project_text_avoids_the_words_the_reader_treats_as_failure_markers(self):

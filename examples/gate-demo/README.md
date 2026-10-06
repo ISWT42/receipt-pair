@@ -2,7 +2,7 @@
 
 A small demo of `receipt_pair gate` that you can run on your own PC. An agent says "The tests pass, ready to push." and the gate checks that claim against the test log before the push runs.
 
-Nothing in it is real. It builds a throwaway folder in your system temp folder: a tiny project with one test, and a git repository that stands in for "the server". The push goes to that repository, not to anything on the internet.
+Nothing in it is real. It builds a throwaway folder in your system temp folder: a tiny project with two tests, and a git repository that stands in for "the server". The push goes to that repository, not to anything on the internet.
 
 ## Run it
 
@@ -19,15 +19,17 @@ python examples/gate-demo/demo.py clean
 
 ## The two takes
 
-**Take 1: the code has a bug.** The cart total forgets the tax, so the one test fails. The demo script runs the tests and saves their output as the log (`test-run.log`). Then it runs the gate on the push:
+**Take 1: the code has a bug.** The cart total forgets the tax, so both tests fail. The demo script runs the tests and saves their output as the log (`test-run.log`). Then it runs the gate on the push:
 
 ```
 python -m receipt_pair gate --claim "The tests pass, ready to push." --log test-run.log -- git push origin main
 ```
 
-The log shows a failing test, so the models should say contradicted, and the push does not run. The demo then asks the "server" what it holds. It holds nothing.
+The log shows failing tests, so the models should say contradicted, and the push does not run. The demo then asks the "server" what it holds. It holds nothing.
 
 **Take 2: the bug is fixed.** The demo script applies a one-line fix and commits it, runs the tests again (they pass), writes a new log, and runs the same gate command. This time the log shows the passing run, so the models should say shown and the push runs. The server now holds the commit.
+
+**Why two tests.** The agent's message says "tests", plural. In an earlier version of this demo, with a single test, the log said "Ran 1 test", and in a live check Qwen3 read "The tests pass" literally against it and called the passing run contradicted ("only one test passed"). With two tests the log and the message agree.
 
 ## What is scripted and what is live
 

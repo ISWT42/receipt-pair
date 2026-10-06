@@ -15,7 +15,7 @@ I say this on camera, so I want it straight.
 
 1. **Lemonade is running** with both models pulled: `Qwen3-4B-Instruct-2507-GGUF` and `Gemma-4-E4B-it-GGUF`. Its window is open and shows the two models. This is the second window I use.
 2. **One PowerShell window**, open in the `receipt-pair` folder. Large font. Nothing else in it. This is the window I record, and every command goes in it.
-3. **Optional, to keep my Windows user name off the video.** The failing test's output shows a file path inside my temp folder. Pasting this once, in the same window, makes that path short. I use the same window for all four commands, so `clean` finds the same folder.
+3. **Optional, to keep my Windows user name off the video.** The failing tests' output shows a file path inside my temp folder. Pasting this once, in the same window, makes that path short. I use the same window for all four commands, so `clean` finds the same folder.
 ```powershell
 New-Item -ItemType Directory -Force C:\gate-demo-tmp | Out-Null; $env:TEMP = "C:\gate-demo-tmp"
 ```
@@ -50,7 +50,7 @@ python examples/gate-demo/demo.py setup
 ```
 
 **Say:**
-> The models run on Lemonade, AMD's local model server: Qwen3 4B and Gemma 4 E4B. Nothing leaves this PC. This builds a throwaway project with one test, and a pretend server. The server is just a git repository in my temp folder. Nothing gets pushed anywhere real.
+> The models run on Lemonade, AMD's local model server: Qwen3 4B and Gemma 4 E4B. Nothing leaves this PC. This builds a throwaway project with two tests, and a pretend server. The server is just a git repository in my temp folder. Nothing gets pushed anywhere real.
 
 ## 3. Take 1: the bug (0:45 to 1:40)
 
@@ -59,10 +59,10 @@ python examples/gate-demo/demo.py setup
 python examples/gate-demo/demo.py take1
 ```
 
-**On screen, as it prints:** the cart code, the failing test (`FAILED (failures=1)`), the agent's line, then the gate command and the two lines "asking Qwen3... asking Gemma...".
+**On screen, as it prints:** the cart code, the failing tests (`FAILED (failures=2)`), the agent's line, then the gate command and the two lines "asking Qwen3... asking Gemma...".
 
 **Say, while the code and the test result are on screen:**
-> The cart total forgets the tax, so the test fails. My script ran the tests and wrote this log, so the agent can't touch it. But the agent still says: "The tests pass, ready to push." That line is scripted, and so is the bug. Everything else is live. Now the push goes through the gate.
+> The cart total forgets the tax, so both tests fail. My script ran the tests and wrote this log, so the agent can't touch it. But the agent still says: "The tests pass, ready to push." That line is scripted, and so is the bug. Everything else is live. Now the push goes through the gate.
 
 **The wait** is about 80 seconds. I cut it and put the caption on screen. If I don't cut it, I say: "Lemonade holds one model at a time here, so it loads Qwen, asks, unloads it, then loads Gemma."
 
@@ -78,7 +78,7 @@ python examples/gate-demo/demo.py take1
 python examples/gate-demo/demo.py take2
 ```
 
-**On screen, as it prints:** the one-line fix, the passing test (`OK`), the same agent line, the same gate command.
+**On screen, as it prints:** the one-line fix, the passing tests (`OK`), the same agent line, the same gate command.
 
 **Say:**
 > Now I fix the bug. One line: the total includes the tax. My script runs the tests again, for real, and writes a new log. The agent says the same thing. Same gate command.

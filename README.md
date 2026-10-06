@@ -169,7 +169,7 @@ Everything after `--` is the command. It is passed on as a list of arguments, wi
 - **It blocks some true claims.** With the default rule, R2, on run 2's 100 fresh logs the pair passed 2 of the 68 claims the log doesn't back, and kept 23 of the 32 true "shown" answers. A blocked action isn't lost: you can still run the command yourself. R1 is looser (it passed 8 of those 68), so keep the default on a gate.
 - **The log and the pairing are yours to get right.** The gate checks the claim against the log you give it. A log the agent could write or edit is still the agent's word. And it doesn't check that the claim is the right condition for the command: you choose that pairing. In the demo, my script runs the tests and writes the log; the agent never touches it.
 
-`examples/gate-demo/` is a demo you can run: a tiny project with one test, a local git repository standing in for the server, and two takes (Take 1 has a bug and the gate blocks the push; in Take 2 the bug is fixed and the push goes through). `DEMO-GATE.md` is my script for recording it.
+`examples/gate-demo/` is a demo you can run: a tiny project with two tests, a local git repository standing in for the server, and two takes (Take 1 has a bug and the gate blocks the push; in Take 2 the bug is fixed and the push goes through). `DEMO-GATE.md` is my script for recording it.
 
 ## Results
 
