@@ -13,6 +13,7 @@ Small logs, items and saved replies to try the commands on. None of them comes f
 | `reply-good.json` | A saved model reply whose quote is in `push-ok.json`. |
 | `reply-invented-quote.json` | A reply that quotes a line which is not in the log. |
 | `reply-quote-from-command.json` | A reply that quotes the command instead of the output. |
+| `gate-demo/` | A demo of `receipt_pair gate`: a throwaway project with a bug, a local git repository standing in for the server, and two takes. Needs Lemonade and git. See its README. |
 
 Try the quote check without a model:
 
