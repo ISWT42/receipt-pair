@@ -1,4 +1,4 @@
-"""The command line: python -m receipt_pair check | batch | score | verify | replay."""
+"""The command line: python -m receipt_pair check | batch | score | verify | replay | gate."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Optional, Sequence
 
-from . import __version__, pair, reader, rules
+from . import __version__, gate, pair, reader, rules
 from .client import (BackendError, DEFAULT_BASE_URL, GEMMA, QWEN, LemonadeClient, ModelSpec)
 from .files import InputError, load_items, load_rows, read_log
 from .replay import format_replay, replay as replay_rows
@@ -20,6 +20,18 @@ EPILOG = """examples:
   python -m receipt_pair score answers.jsonl examples/toy-items.jsonl
   python -m receipt_pair verify --log examples/push-ok.json --reply examples/reply-invented-quote.json
   python -m receipt_pair replay answers.jsonl examples/toy-items.jsonl
+  python -m receipt_pair gate --claim "The tests pass, ready to push." --log test-run.log -- git push origin main
+"""
+
+GATE_EPILOG = """The command after -- runs only if the pair's answer is "shown". Any other answer, and any failure to finish
+the check, prints why and exits without running it. There is no shell: the arguments after -- are passed on as given.
+
+exit status:
+  the command's own    the command ran
+  3                    not shown: the command did not run
+  4                    contradicted: the command did not run
+  1                    could not check (Lemonade or the log): the command did not run
+  127 or 126           shown, but the command could not be found or started
 """
 
 ClientFactory = Callable[..., LemonadeClient]
@@ -106,7 +118,34 @@ def build_parser() -> argparse.ArgumentParser:
     replaying.add_argument("--json", action="store_true", help="print the result as JSON")
     _add_log_options(replaying)
     replaying.set_defaults(func=cmd_replay)
+
+    gating = sub.add_parser("gate", help="run a command only if the claim is shown by the log",
+                            usage="receipt_pair gate [options] --claim CLAIM --log FILE -- COMMAND [ARGS ...]",
+                            formatter_class=argparse.RawDescriptionHelpFormatter, epilog=GATE_EPILOG,
+                            description="Check one claim against one log with both models. Only if the answer is shown, "
+                                        "run COMMAND (everything after --). No receipt, no action.")
+    gating.add_argument("--claim", required=True, help="the agent's claim, in its own words")
+    gating.add_argument("--log", required=True, metavar="FILE", help="the agent's log: JSON, JSON Lines or plain text")
+    gating.add_argument("--dry-run", action="store_true",
+                        help="ask the models and say what would happen, but run nothing")
+    _add_model_options(gating)
+    gating.set_defaults(func=cmd_gate)
+    parser.gate_parser = gating        # main() reports a missing command through it
     return parser
+
+
+def split_command(argv: Sequence) -> tuple:
+    """For `gate`, everything after the earliest `--` is the command to run (a later `--` belongs to the command).
+    Returns (argv for the parser, the command or None).
+
+    argparse never sees the command, so a flag meant for it (git push --force) is never taken for one of ours.
+    Other commands are left alone.
+    """
+    argv = list(argv)
+    if argv[:1] == ["gate"] and "--" in argv:
+        at = argv.index("--")
+        return argv[:at], argv[at + 1:]
+    return argv, None
 
 
 # ---- helpers ---------------------------------------------------------------------------------
@@ -321,6 +360,64 @@ def cmd_replay(args: argparse.Namespace, factory: ClientFactory, out: Any, err: 
     return 1 if result["differences"] else 0
 
 
+def _flush(stream: Any) -> None:
+    flush = getattr(stream, "flush", None)
+    if flush is not None:
+        flush()
+
+
+def _could_not_check(message: str, out: Any, err: Any) -> int:
+    print("receipt_pair: " + message, file=err)
+    print(gate.PLAIN[gate.COULD_NOT_CHECK], file=out)
+    return gate.EXIT_COULD_NOT_CHECK
+
+
+def cmd_gate(args: argparse.Namespace, factory: ClientFactory, out: Any, err: Any) -> int:
+    """Check the claim; run the command only if the pair's answer is shown. Anything else, or a check that could not
+    be finished, prints why and returns without running it."""
+    command = args.run
+    try:
+        if not args.claim.strip():
+            raise InputError("the claim is empty")
+        turns = read_log(args.log)
+        caps = _caps(args)
+        models = model_specs(args)
+        client = _client(args, factory, err)
+        if len(turns) > caps.max_turns:
+            print("The log has " + str(len(turns)) + " turns; the models see the last " + str(caps.max_turns) + ".", file=err)
+        decision = pair.check_claim(args.claim, turns, client=client, models=models, rule=args.rule, caps=caps,
+                                    progress=lambda message: print(message + " ...", file=err, flush=True))
+    except (InputError, BackendError, ValueError) as error:
+        return _could_not_check(str(error), out, err)
+    except Exception as error:  # noqa: BLE001 - whatever went wrong, the check did not finish, so nothing runs
+        return _could_not_check(type(error).__name__ + ": " + str(error), out, err)
+    decision.pop("rows")
+    judgment = gate.judge(decision)
+    shown = decision
+    if judgment.answer == gate.COULD_NOT_CHECK:
+        shown = dict(decision, answer=judgment.answer)       # "not shown" would hide that a call failed
+        failed = [m for m in (decision.get("models") or {}).values() if m.get("code") in pair.RETRY_CODES]
+        if failed:
+            detail = next((m["error_detail"] for m in failed if m.get("error_detail")), "")
+            print("receipt_pair: Lemonade did not answer for " + ", ".join(str(m.get("model")) for m in failed) + " at " +
+                  client.base_url + (" (" + detail + ")" if detail else "") + ". Is it running, and are both models pulled?",
+                  file=err)
+    print(render_check(args.claim, shown), file=out)
+    print("", file=out)
+    print(gate.plain_line(judgment, command, args.dry_run), file=out)
+    if not judgment.run:
+        return judgment.status
+    if args.dry_run:
+        return 0
+    _flush(out)
+    _flush(err)                  # so the command's own output comes after ours
+    try:
+        return gate.run_command(command)
+    except gate.CommandNotStarted as error:
+        print("receipt_pair: " + str(error), file=err)
+        return error.status
+
+
 def _utf8(stream: Any) -> None:
     """Make a console that is not UTF-8 (Windows) print log text instead of failing on it."""
     reconfigure = getattr(stream, "reconfigure", None)
@@ -338,7 +435,15 @@ def main(argv: Optional[Sequence] = None, *, client_factory: Optional[ClientFact
     if stderr is None:
         _utf8(sys.stderr)
     out, err = stdout or sys.stdout, stderr or sys.stderr
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    argv, command = split_command(sys.argv[1:] if argv is None else argv)
+    args = parser.parse_args(argv)
+    if args.command == "gate":
+        if not command:
+            parser.gate_parser.error("give the command to run after --, for example:\n"
+                                     "  python -m receipt_pair gate --claim \"The tests pass, ready to push.\" "
+                                     "--log test-run.log -- git push origin main")
+        args.run = command
     try:
         return args.func(args, client_factory or default_client_factory, out, err)
     except (InputError, BackendError, ValueError) as error:
