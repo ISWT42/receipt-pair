@@ -1,6 +1,6 @@
 # Demo script: the receipt gate in 3 minutes
 
-A screen-and-voice script for me to record with the Windows Snipping Tool. Target 3:00. The voice is about 360 words, roughly 2:30 at a calm pace, so the rest is for the commands to run and the answers to be read.
+A screen-and-voice script for me to record with the Windows Snipping Tool. Target 3:00. The voice is about 370 words, roughly 2:35 at a calm pace, so the rest is for the commands to run and the answers to be read.
 
 The idea in one line: an agent says "The tests pass, ready to push." The gate checks that against the log before the push runs. No receipt, no action.
 
@@ -66,10 +66,10 @@ python examples/gate-demo/demo.py take1
 
 **The wait** is about 80 seconds. I cut it and put the caption on screen. If I don't cut it, I say: "Lemonade holds one model at a time here, so it loads Qwen, asks, unloads it, then loads Gemma."
 
-**On screen, when the answer comes:** `Answer: CONTRADICTED`, both models quoting the failing line (I keep it up for five seconds), the last line `contradicted: the log shows it failed`, then `Gate exit status: 4` and `live: the server has: nothing.`
+**On screen, when the answer comes:** `Answer: CONTRADICTED`, each model quoting a failing line from the log (I keep the quotes up for five seconds), the last line `contradicted: the log shows it failed`, then `Gate exit status: 4` and `live: the server has: nothing.`
 
 **Say:**
-> Both models say contradicted, and both quote the failing line. The gate says: the log shows it failed. The push never ran. The server has nothing.
+> Both models say contradicted, and each quotes a line from the log that shows the failure. The gate says: the log shows it failed. The push never ran. The server has nothing.
 
 ## 4. Take 2: the fix (1:40 to 2:30)
 
@@ -85,10 +85,10 @@ python examples/gate-demo/demo.py take2
 
 **The wait**, again about 80 seconds. I cut it again.
 
-**On screen, when the answer comes:** `Answer: SHOWN`, both models quoting the `OK` line (five seconds), the line `shown: the log shows it worked, so the command runs`, the push output (`main -> main`), `Gate exit status: 0`, and `live: the server has:` followed by the commit.
+**On screen, when the answer comes:** `Answer: SHOWN`, each model quoting a passing line from the log, most likely `OK` (five seconds), the line `shown: the log shows it worked, so the command runs`, the push output (`main -> main`), `Gate exit status: 0`, and `live: the server has:` followed by the commit.
 
 **Say:**
-> This time both models say shown, and both quote the OK line from the log. The gate lets the push run. And the server has the commit.
+> This time both models say shown, and each quotes a line from the log that shows the tests passed. The gate lets the push run. And the server has the commit.
 
 ## 5. What is live, and what this doesn't do (2:30 to 3:00)
 
