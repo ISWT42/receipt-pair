@@ -14,6 +14,7 @@ Small logs, items and saved replies to try the commands on. None of them comes f
 | `reply-invented-quote.json` | A reply that quotes a line which is not in the log. |
 | `reply-quote-from-command.json` | A reply that quotes the command instead of the output. |
 | `gate-demo/` | A demo of `receipt_pair gate`: a throwaway project with a bug, a local git repository standing in for the server, and two takes. Needs Lemonade and git. See its README. |
+| `chain_demo/` | The demo in the video: a false "done" passed down a reviewer agent and a release manager agent, with and without the receipt check, on the two claims the video shows. They come from the chain test, not from the exam. Needs Lemonade. See its README. |
 
 Try the quote check without a model:
 
