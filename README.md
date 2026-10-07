@@ -6,6 +6,10 @@ Two small AI models, run on your own PC by AMD's [Lemonade](https://lemonade-ser
 
 That sentence is where this started. This repo is a working step toward it: a tool you can run today, sealed test results you can check, and a plain account of what they do and don't show yet.
 
+## The video's demo
+
+The video for this project shows a different demo from the gate: a build agent says "done", a reviewer agent and a release manager agent act on it, and the receipt check sits between them. [`examples/chain_demo/`](examples/chain_demo/) is that demo, with the two claims the video shows, so you can replay it on your own PC with Lemonade: `python examples/chain_demo/demo_chain.py --color C004 C079`. One claim's log contradicts it and the check holds it back. The other claim's log says nothing about it, the check says "not shown", and the reviewer approves anyway. Two claims are not a result: the folder's [README](examples/chain_demo/README.md) has what the demo can and can't show, and where the counts for all 90 claims are.
+
 ## The problem
 
 An agent says it's finished: "I pushed the fix", "I sent the invoice", "the tests pass". Sometimes the log says otherwise. Sometimes the log says nothing either way. I want a check that reads only the agent's own log, runs on my machine so the log never leaves it, and gives one of three answers:
