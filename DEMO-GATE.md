@@ -107,6 +107,7 @@ python examples/gate-demo/demo.py clean
 The models are live and small. If a take doesn't match this script, I say what happened. I don't cut it out and I don't pretend.
 
 - **Take 1 says "not shown" instead of "contradicted".** The push is still blocked. I say: "This time they said not shown. Same result. No receipt, no action."
+- **In Take 1, one model's quote is refused.** In my dress rehearsal on 6 Oct, Qwen said contradicted but quoted the whole failure block, which wasn't word for word in the log, so the checker refused it and counted Qwen as not shown. Gemma's quote, `FAILED (failures=2)`, stood, and the push was still blocked. I say: "Qwen said contradicted too, but its quote wasn't word for word in the log, so the checker refused it. A quote has to really be there."
 - **Take 2 is blocked.** The pair said no to a good claim. I say so: "Here the pair blocked a true claim. That's the cost of shown needs both. I can still run the push myself." The output shows which model disagreed and why. If I record it again, I say it's a re-record.
 - **Lemonade isn't answering.** The demo stops before anything runs and says so. I start Lemonade and paste the command again.
 - **I want to start over.** I paste `setup` again. It replaces the throwaway folder.
