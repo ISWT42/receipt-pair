@@ -131,8 +131,9 @@ The file can be JSON (a list of turns, or an object with a `turns` list), JSON L
 | `python -m receipt_pair score answers.jsonl items.jsonl` | Score a batch when the items carry a `"truth"` field (`shown`, `contradicted` or `not_shown`). Every count comes with its own denominator, for each model and for R1, R2 and R3. |
 | `python -m receipt_pair verify --log log.json --reply reply.json` | Run only the quote check on a saved reply. No server needed. |
 | `python -m receipt_pair replay answers.jsonl items.jsonl` | Rebuild every request and re-run the quote check on every saved reply, and compare with what the answers file recorded. No server needed. Exit status 1 if anything differs. |
+| `python -m receipt_pair gate --claim "..." --log log.json -- command args` | Check the claim, and run the command only if the answer is "shown". See "Gate an action on a receipt" below. |
 
-Choose a rule with `--rule r1|r2|r3` (default `r2`). `--model-a` and `--model-b` take other Lemonade model ids; `--extra-a` and `--extra-b` pass extra request fields (the default Gemma gets thinking switched off, other models get nothing).
+Choose a rule with `--rule r1|r2|r3` (default `r2`; `gate` takes only `r2` or `r3`). `--model-a` and `--model-b` take other Lemonade model ids; `--extra-a` and `--extra-b` pass extra request fields (the default Gemma gets thinking switched off, other models get nothing).
 
 From Python:
 
@@ -145,6 +146,32 @@ print(result["answer"], result["quotes"])
 ```
 
 `examples/` has the three toy claims above and five invented ones, each labelled by me. `python -m receipt_pair batch examples/more-items.jsonl` followed by `score` runs them.
+
+## Gate an action on a receipt
+
+`gate` puts the check in front of an action. It runs your command only if the two models say the claim is **shown**. For anything else it prints the answer, the quotes and one plain line, and exits without running the command.
+
+```
+python -m receipt_pair gate --claim "The tests pass, ready to push." --log test-run.log -- git push origin main
+```
+
+Everything after `--` is the command. It is passed on as a list of arguments, with no shell, so `;`, `&&`, `$HOME` and `*` mean nothing to the gate. One exception: on Windows a `.cmd` or `.bat` command always goes through cmd.exe, which reads characters such as `&` and `%`, so don't hand one text you don't trust.
+
+| The pair says | The gate | The last line it prints | Exit status |
+|---|---|---|---|
+| shown | runs the command | `shown: the log shows it worked, so the command runs: git` | the command's own |
+| not shown | does not run it | `not shown: no receipt, no action` | 3 |
+| contradicted | does not run it | `contradicted: the log shows it failed` | 4 |
+| Lemonade did not answer, or the log can't be read | does not run it | `could not check: no receipt, no action` | 1 |
+| shown, but the command can't be found or started | can't run it, says why | the shown line, then the error | 127 or 126 |
+
+- **It fails closed.** If either model's call fails, or the log can't be read, nothing runs, whichever rule you chose.
+- **Read the last line, not only the exit status.** The command's own status can be 1, 3 or 4 too.
+- **`--dry-run`** asks the models and prints the whole command it would run, but runs nothing. A real run prints only the program's name (`git` above), because arguments can hold secrets and this output ends up in logs.
+- **It blocks some true claims.** With the default rule, R2, on run 2's 100 fresh logs the pair passed 2 of the 68 claims the log doesn't back, and kept 23 of the 32 true "shown" answers. A blocked action isn't lost: you can still run the command yourself. R1 is looser (it passed 8 of those 68), so the gate refuses it.
+- **The log and the pairing are yours to get right.** The gate checks the claim against the log you give it. A log the agent could write or edit is still the agent's word. And it doesn't check that the claim is the right condition for the command: you choose that pairing. In the demo, my script runs the tests and writes the log; the agent never touches it.
+
+`examples/gate-demo/` is a demo you can run: a tiny project with two tests, a local git repository standing in for the server, and two takes (Take 1 has a bug and the gate blocks the push; in Take 2 the bug is fixed and the push goes through). `DEMO-GATE.md` is my script for recording it.
 
 ## Results
 
@@ -284,14 +311,16 @@ receipt_pair/   the package (standard library only)
   score.py      the measures, with Wilson intervals
   replay.py     re-derive saved answers from their replies
   files.py      reading logs, items and answers
+  gate.py       run a command only if the pair says "shown"
   cli.py        python -m receipt_pair
-tests/          python -m unittest (no network, no model; about a second)
-examples/       toy logs, items and saved replies
+tests/          python -m unittest (no network, no model; a few seconds)
+examples/       toy logs, items and saved replies; gate-demo/ is the gate demo
 receipts/       fingerprints, time stamps and the sealed score files
 DEMO-SCRIPT.md  a 3-minute demo script
+DEMO-GATE.md    a 3-minute demo script for the gate
 ```
 
-The tests check the pair rules, the quote check, the Lemonade client (against a fake server in memory), the command line, the scoring, and that the numbers in this README match the sealed score files.
+The tests check the pair rules, the quote check, the Lemonade client (against a fake server in memory), the command line, the gate (against the same fake server, with a real command that writes a file when it runs), the gate demo (a real throwaway git project, with the two models faked), the scoring, and that the numbers in this README match the sealed score files.
 
 ## Contributing
 
