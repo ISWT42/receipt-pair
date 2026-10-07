@@ -3,3 +3,5 @@ receipts/** -text
 *.tsq binary
 *.tsr binary
 *.ots binary
+# The two claims in examples/chain_demo/claims.jsonl are copied byte for byte from the sealed chain test, CRLF line ends included.
+examples/chain_demo/claims.jsonl -text
