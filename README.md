@@ -295,7 +295,7 @@ A stamp shows the file existed, exactly as it is, by that time. It doesn't show 
 
 Close neighbors, listed so you can read them.
 
-- **[swarm-receipts](https://github.com/ISWT42/swarm-receipts)** (mine, MIT, DOI 10.5281/zenodo.23147283): a bench that tests agent-oversight checkers on a real multi-agent record, with sealed exams. The reader in this repo comes from it.
+- **[swarm-receipts](https://github.com/ISWT42/swarm-receipts)** (mine, MIT): a bench that tests agent-oversight checkers on a real multi-agent record, with sealed exams. The reader in this repo comes from it.
 - **ClaimReceipt** (Zhu and Chang, arXiv:2609.01992) recomputes claims from retained, signed evidence and tests itself with planted faults.
 - **OverclaimBench** (Smyth et al., arXiv:2609.20812) measures agents claiming work they never did.
 - **Failure-Transparent Agents** (Zhu et al., arXiv:2609.35732) cuts false success with structured evidence contracts.
